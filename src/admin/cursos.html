@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Admin Cursos</title>
+  <script type="module">
+    import { CursosController } from "../controllers/cursosController.js";
+
+    async function cargar() {
+      const cursos = await CursosController.listar();
+      document.querySelector("#lista").innerHTML = cursos
+        .map(c => `<li>${c.nombre} - ${c.categoria}</li>`)
+        .join("");
+    }
+
+    cargar();
+  </script>
+</head>
+<body>
+  <h1>Administración de Cursos</h1>
+  <ul id="lista"></ul>
+</body>
+</html>
