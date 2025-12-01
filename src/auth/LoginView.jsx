@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useAuth } from "./AuthProvider.jsx";
+import { useAuth } from "../auth/AuthProvider.jsx";
 import { useNavigate } from "react-router-dom";
 
 export default function LoginView() {
@@ -11,19 +11,12 @@ export default function LoginView() {
   async function handleSubmit(e) {
     e.preventDefault();
 
-    const res = await fetch("http://localhost:3000/api/usuarios/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
-    });
-
-    const data = await res.json();
-
-    if (!res.ok) {
-      return alert(data.msg || "Error al iniciar sesión");
+    const result = await login(email, password);
+    if (!result.success) {
+      alert(result.error || "Error al iniciar sesión");
+      return;
     }
 
-    login(data.user, data.token);
     navigate("/");
   }
 
@@ -35,6 +28,7 @@ export default function LoginView() {
         type="email"
         placeholder="Email"
         className="border p-2 w-full mb-3"
+        value={email}
         onChange={(e) => setEmail(e.target.value)}
       />
 
@@ -42,6 +36,7 @@ export default function LoginView() {
         type="password"
         placeholder="Contraseña"
         className="border p-2 w-full mb-3"
+        value={password}
         onChange={(e) => setPassword(e.target.value)}
       />
 
