@@ -1,50 +1,100 @@
 const BASE_URL = "http://localhost:3000/api/cursos";
 
-// Manejo centralizado de errores y respuesta
-async function handleResponse(res) {
-  if (!res.ok) {
-    const msg = await res.text();
-    throw new Error(`Error API: ${msg}`);
-  }
-  return res.json();
+// ============================
+// Obtener token JWT
+// ============================
+function getToken() {
+  return localStorage.getItem("token");
 }
 
+// ============================
+// Manejo global de respuestas
+// ============================
+async function handleResponse(res) {
+  const text = await res.text();
+
+  // Si la API devolvió error
+  if (!res.ok) {
+    throw new Error(`Error API: ${text}`);
+  }
+
+  // Intentar parsear a JSON (algunos endpoints devuelven vacío)
+  try {
+    return JSON.parse(text);
+  } catch {
+    return null;
+  }
+}
+
+// ============================
+//  GET: Todos los cursos
+// ============================
 export async function getCursos() {
   const res = await fetch(BASE_URL);
   const json = await handleResponse(res);
-  return json.data; // ⬅ devolvemos SOLO el array real
+  return json?.data;
 }
 
+// ============================
+//  GET: Curso por ID
+// ============================
 export async function getCursoById(id) {
   const res = await fetch(`${BASE_URL}/${id}`);
   const json = await handleResponse(res);
-  return json.data; // ⬅ devolvemos solo el objeto real
+  return json?.data;
 }
 
+// ============================
+//  POST: Crear curso (solo ADMIN)
+// ============================
 export async function createCurso(data) {
+  const token = getToken();
+
   const res = await fetch(BASE_URL, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data)
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${token}`
+    },
+    body: JSON.stringify(data),
   });
+
   const json = await handleResponse(res);
-  return json.data; // ⬅ curso creado
+  return json?.data;
 }
 
+// ============================
+//  PUT: Editar curso (solo ADMIN)
+// ============================
 export async function updateCurso(id, data) {
+  const token = getToken();
+
   const res = await fetch(`${BASE_URL}/${id}`, {
     method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data)
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${token}`
+    },
+    body: JSON.stringify(data),
   });
+
   const json = await handleResponse(res);
-  return json.data;
+  return json?.data;
 }
 
+// ============================
+//  DELETE: Eliminar curso (solo ADMIN)
+// ============================
 export async function deleteCurso(id) {
+  const token = getToken();
+
   const res = await fetch(`${BASE_URL}/${id}`, {
-    method: "DELETE"
+    method: "DELETE",
+    headers: {
+      "Authorization": `Bearer ${token}`
+    }
   });
+
   const json = await handleResponse(res);
-  return json.data;
+  return json?.data;
 }

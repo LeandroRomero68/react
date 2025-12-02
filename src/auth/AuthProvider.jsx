@@ -6,32 +6,39 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(null);
 
+  // ======================================
+  // CARGAR USUARIO Y TOKEN DEL LOCALSTORAGE
+  // ======================================
   useEffect(() => {
-  const savedUser = localStorage.getItem("user");
-  const savedToken = localStorage.getItem("token");
+    try {
+      const savedUser = localStorage.getItem("user");
+      const savedToken = localStorage.getItem("token");
 
-  try {
-    if (savedUser && savedToken) {
-      setUser(JSON.parse(savedUser));
-      setToken(savedToken);
+      if (savedUser && savedToken) {
+        setUser(JSON.parse(savedUser));
+        setToken(savedToken);
+      }
+    } catch (err) {
+      console.error("Error leyendo localStorage:", err);
+      localStorage.removeItem("user");
+      localStorage.removeItem("token");
     }
-  } catch (err) {
-    console.error("Error parsing localStorage user:", err);
-    localStorage.removeItem("user");
-    localStorage.removeItem("token");
-    setUser(null);
-    setToken(null);
-  }
-}, []);
+  }, []);
 
-  // Esta función solo guarda los datos en estado/localStorage
-  function saveUser(userData, newToken) {
+  // ======================================
+  // GUARDAR USER + TOKEN CORRECTAMENTE
+  // ======================================
+  function saveUser(userData, jwtToken) {
     localStorage.setItem("user", JSON.stringify(userData));
-    localStorage.setItem("token", newToken);
+    localStorage.setItem("token", jwtToken);
+
     setUser(userData);
-    setToken(newToken);
+    setToken(jwtToken);
   }
 
+  // ======================================
+  // LOGOUT
+  // ======================================
   function logout() {
     localStorage.removeItem("user");
     localStorage.removeItem("token");
@@ -39,31 +46,52 @@ export function AuthProvider({ children }) {
     setToken(null);
   }
 
+  // ======================================
+  // LOGIN AL BACKEND
+  // ======================================
   async function loginRequest(email, password) {
-  try {
-    const res = await fetch("http://localhost:3000/api/usuarios/login", { 
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
-    });
+    try {
+      const res = await fetch("http://localhost:3000/api/usuarios/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
 
-    if (!res.ok) {
-      return { success: false, error: "Usuario o contraseña incorrecta" };
+      const data = await res.json();
+
+      if (!res.ok) {
+        return {
+          success: false,
+          error: data.msg || "Usuario o contraseña incorrecta",
+        };
+      }
+
+      // ------------------------------------
+      // 🔥 El backend envía: { data: { user, token } }
+      // ------------------------------------
+      const userData = data.data?.user;
+      const jwtToken = data.data?.token;
+
+      if (!userData || !jwtToken) {
+        console.error("Backend no envió user o token");
+        return { success: false, error: "Respuesta inválida desde el servidor" };
+      }
+
+      // Guardamos user + token reales
+      saveUser(userData, jwtToken);
+
+      return { success: true };
+
+    } catch (error) {
+      console.error("Error login:", error);
+      return { success: false, error: "Error de conexión" };
     }
-
-    const data = await res.json();
-
-// Acceder correctamente al user y token dentro de data.data
-saveUser(data.data.user, data.data.token);
-
-return { success: true, data };
-  } catch (error) {
-    console.error("Error en login:", error);
-    return { success: false, error: "Error de conexión" };
   }
-}
+
   return (
-    <AuthContext.Provider value={{ user, token, login: loginRequest, logout }}>
+    <AuthContext.Provider
+      value={{ user, token, login: loginRequest, logout }}
+    >
       {children}
     </AuthContext.Provider>
   );
