@@ -29,10 +29,13 @@ export function AuthProvider({ children }) {
   // GUARDAR USER + TOKEN CORRECTAMENTE
   // ======================================
   function saveUser(userData, jwtToken) {
-    localStorage.setItem("user", JSON.stringify(userData));
+    // 🔥 Agregamos el token dentro del usuario
+    const userWithToken = { ...userData, token: jwtToken };
+
+    localStorage.setItem("user", JSON.stringify(userWithToken));
     localStorage.setItem("token", jwtToken);
 
-    setUser(userData);
+    setUser(userWithToken);
     setToken(jwtToken);
   }
 
@@ -66,9 +69,7 @@ export function AuthProvider({ children }) {
         };
       }
 
-      // ------------------------------------
-      // 🔥 El backend envía: { data: { user, token } }
-      // ------------------------------------
+      // El backend envía: { data: { user, token } }
       const userData = data.data?.user;
       const jwtToken = data.data?.token;
 
@@ -89,9 +90,7 @@ export function AuthProvider({ children }) {
   }
 
   return (
-    <AuthContext.Provider
-      value={{ user, token, login: loginRequest, logout }}
-    >
+    <AuthContext.Provider value={{ user, token, login: loginRequest, logout }}>
       {children}
     </AuthContext.Provider>
   );

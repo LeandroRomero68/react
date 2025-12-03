@@ -1,3 +1,4 @@
+// src/views/PerfilView.jsx
 import { useEffect, useState } from "react";
 import { useAuth } from "../auth/AuthProvider.jsx";
 import compraService from "../services/comprasService.js";
@@ -9,22 +10,25 @@ export default function PerfilView() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (user?._id) {
-      obtenerComprasUsuario(user._id);
+    if (user) {
+      obtenerComprasUsuario();
     }
   }, [user]);
 
-  const obtenerComprasUsuario = async (usuarioId) => {
-  setLoading(true);
-  try {
-    const res = await compraService.getComprasByUsuario(usuarioId);
-    setCompras(res.data); // 👈 aquí usamos res.data en vez de res.compras
-  } catch (err) {
-    console.error("Error al cargar compras:", err);
-  } finally {
-    setLoading(false);
-  }
-};
+  const obtenerComprasUsuario = async () => {
+    setLoading(true);
+    try {
+      // 👉 Ahora llamamos al endpoint correcto con el TOKEN
+      const comprasUsuario = await compraService.getMisCursos(user.token);
+
+      // 👉 El service ya devuelve directamente el array
+      setCompras(comprasUsuario);
+    } catch (err) {
+      console.error("Error al cargar compras:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="container mx-auto p-6">
@@ -49,24 +53,27 @@ export default function PerfilView() {
             {compra.curso ? (
               <>
                 <div>
-                  <h3 className="text-lg font-bold">{compra.curso?.nombre}</h3>
+                  <h3 className="text-lg font-bold">{compra.curso.nombre}</h3>
                   <p className="text-gray-600">
-                    {compra.curso?.precio ? `$${compra.curso.precio}` : "Gratis"}
+                    {compra.curso.precio ? `$${compra.curso.precio}` : "Gratis"}
                   </p>
                   <p
                     className={`text-sm ${
-                      compra.estado === "pagado" ? "text-green-600" : "text-red-600"
+                      compra.estado === "pagado"
+                        ? "text-green-600"
+                        : "text-red-600"
                     }`}
                   >
                     Estado: {compra.estado}
                   </p>
                   <span className="text-sm text-blue-600">
-                    Fecha: {new Date(compra.fechaCompra).toLocaleDateString()}
+                    Fecha:{" "}
+                    {new Date(compra.fechaCompra).toLocaleDateString("es-AR")}
                   </span>
                 </div>
 
                 <Link
-                  to={`/cursos/${compra.curso?._id}`}
+                  to={`/cursos/${compra.curso._id}`}
                   className="mt-4 px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700 transition text-center"
                 >
                   Ir al curso →
