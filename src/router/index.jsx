@@ -8,6 +8,7 @@ import CursoEditar from "../pages/CursoEditar.jsx";
 import LoginView from "../auth/LoginView.jsx";
 import RegisterView from "../auth/RegisterView.jsx";
 import AdminCompras from "../pages/AdminCompras.jsx";
+import PerfilView from "../pages/PerfilView.jsx"; // 👈 IMPORTANTE
 
 export const router = createBrowserRouter([
   {
@@ -21,6 +22,9 @@ export const router = createBrowserRouter([
       { path: "/login", element: <LoginView /> },
       { path: "/register", element: <RegisterView /> },
       { path: "/compras", element: <AdminCompras /> },
+
+      // 👇 AGREGADO: PERFIL DEL ALUMNO
+      { path: "/perfil", element: <PerfilView /> },
     ],
   },
 ]);

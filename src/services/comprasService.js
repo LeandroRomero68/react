@@ -24,6 +24,14 @@ export default {
     return res.data;
   },
 
+  // ⭐ GET /api/compras/mis-cursos/:usuarioId
+  async getComprasByUsuario(usuarioId) {
+    const res = await api.get(`/compras/mis-cursos/${usuarioId}`);
+
+    // Devuelve directamente el array de compras poblado
+    return res.data.compras || [];
+  },
+
   // POST /api/compras
   async createCompra(payload) {
     const res = await api.post("/compras", payload);

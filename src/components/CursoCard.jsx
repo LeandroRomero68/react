@@ -12,9 +12,42 @@ export default function CursoCard({ curso }) {
     window.location.reload();
   };
 
-  const handleComprar = () => {
-  alert(`Has comprado el curso: ${curso.nombre}`);
+  const handleComprar = async (idCurso) => {
+  if (!user || !user.id) {
+    alert("Debes iniciar sesión para comprar un curso");
+    return;
+  }
+
+  console.log("🔍 user.id:", user.id);
+  console.log("⚡ idCurso recibido:", idCurso);
+
+  try {
+    const res = await fetch("http://localhost:3000/api/compras", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        usuario: `${user.id}`, // <-- ESTA LÍNEA ES LA BUENA
+        curso: `${idCurso}`,   // <-- y esta también
+        metodoPago: "efectivo",
+        estado: "debe"
+      }),
+    });
+
+    const data = await res.json();
+
+    if (data.ok) {
+      alert(`Has comprado el curso: ${curso.nombre}`);
+      window.location.reload();
+    } else {
+      alert("No se pudo registrar la compra");
+      console.error(data);
+    }
+  } catch (error) {
+    console.error("Error al comprar:", error);
+    alert("Hubo un problema al registrar la compra");
+  }
 };
+
 
   return (
     <div className="relative bg-white border p-5 rounded-xl shadow-lg hover:shadow-xl transition">
@@ -23,9 +56,7 @@ export default function CursoCard({ curso }) {
       <p className="text-gray-600 mt-2">{curso.descripcion}</p>
       <p className="text-gray-900 font-bold mt-3">${curso.precio}</p>
 
-      {/* Botones según rol */}
       <div className="flex gap-3 mt-4">
-        {/* Botones solo para admin */}
         {user?.rol === "admin" && (
           <>
             <Link
@@ -44,10 +75,9 @@ export default function CursoCard({ curso }) {
           </>
         )}
 
-        {/* Botón Comprar solo para usuarios normales */}
         {user?.rol === "user" && (
           <button
-            onClick={() => handleComprar(curso._id)}
+            onClick={() => handleComprar(curso.id || curso._id)}
             className="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 transition"
           >
             Comprar

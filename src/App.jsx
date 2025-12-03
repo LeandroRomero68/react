@@ -1,6 +1,6 @@
 import { Outlet, Link } from "react-router-dom";
 import { useAuth } from "./auth/AuthProvider.jsx";
-
+import PerfilView from "./views/PerfilView.jsx"; // 👈 Asegurate de tener este import
 
 export default function App() {
   const { user, logout } = useAuth();
@@ -40,7 +40,14 @@ export default function App() {
         {/* Si está logueado */}
         {user && (
           <>
-            <span className="mr-2 font-medium">Hola, {user.nombre}</span>
+            <Link to="/perfil" className="font-medium text-blue-600 hover:text-blue-800">
+              Mi Perfil
+            </Link>
+
+            <span className="mr-2 font-medium">
+              Hola, {user.nombre}
+            </span>
+
             <button
               onClick={logout}
               className="text-red-500 border border-red-500 px-2 py-1 rounded hover:bg-red-500 hover:text-white transition"
