@@ -1,14 +1,18 @@
-// src/layouts/Layout.jsx
 import Navbar from "../components/Navbar.jsx";
+import Footer from "../components/Footer.jsx";
 import { Outlet } from "react-router-dom";
 
 export default function Layout() {
   return (
-    <div>
+    <div className="min-h-screen flex flex-col">
       <Navbar />
-      <main className="pt-24 p-4 w-full">
+
+      {/* Contenido dinámico */}
+      <main className="flex-grow w-full">
         <Outlet />
       </main>
+
+      <Footer />
     </div>
   );
 }

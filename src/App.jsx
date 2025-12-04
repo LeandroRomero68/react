@@ -1,6 +1,6 @@
 import { Outlet, Link } from "react-router-dom";
 import { useAuth } from "./auth/AuthProvider.jsx";
-import PerfilView from "./views/PerfilView.jsx"; // 👈 Asegurate de tener este import
+import PerfilView from "./views/PerfilView.jsx";
 
 export default function App() {
   const { user, logout } = useAuth();
@@ -59,7 +59,7 @@ export default function App() {
       </nav>
 
       {/* Contenido debajo del navbar */}
-      <div className="pt-24 p-4 w-full">
+      <div className="w-full">
         <Outlet />
       </div>
 

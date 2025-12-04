@@ -6,9 +6,6 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(null);
 
-  // ======================================
-  // CARGAR USUARIO Y TOKEN DEL LOCALSTORAGE
-  // ======================================
   useEffect(() => {
     try {
       const savedUser = localStorage.getItem("user");
@@ -25,11 +22,8 @@ export function AuthProvider({ children }) {
     }
   }, []);
 
-  // ======================================
-  // GUARDAR USER + TOKEN CORRECTAMENTE
-  // ======================================
   function saveUser(userData, jwtToken) {
-    // 🔥 Agregamos el token dentro del usuario
+
     const userWithToken = { ...userData, token: jwtToken };
 
     localStorage.setItem("user", JSON.stringify(userWithToken));
@@ -39,9 +33,7 @@ export function AuthProvider({ children }) {
     setToken(jwtToken);
   }
 
-  // ======================================
-  // LOGOUT
-  // ======================================
+
   function logout() {
     localStorage.removeItem("user");
     localStorage.removeItem("token");
@@ -49,9 +41,6 @@ export function AuthProvider({ children }) {
     setToken(null);
   }
 
-  // ======================================
-  // LOGIN AL BACKEND
-  // ======================================
   async function loginRequest(email, password) {
     try {
       const res = await fetch("http://localhost:3000/api/usuarios/login", {
@@ -69,7 +58,7 @@ export function AuthProvider({ children }) {
         };
       }
 
-      // El backend envía: { data: { user, token } }
+
       const userData = data.data?.user;
       const jwtToken = data.data?.token;
 
@@ -78,7 +67,7 @@ export function AuthProvider({ children }) {
         return { success: false, error: "Respuesta inválida desde el servidor" };
       }
 
-      // Guardamos user + token reales
+
       saveUser(userData, jwtToken);
 
       return { success: true };

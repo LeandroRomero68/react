@@ -26,8 +26,8 @@ export default function CursoCard({ curso }) {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        usuario: `${user.id}`, // <-- ESTA LÍNEA ES LA BUENA
-        curso: `${idCurso}`,   // <-- y esta también
+        usuario: `${user.id}`,
+        curso: `${idCurso}`,
         metodoPago: "efectivo",
         estado: "debe"
       }),
@@ -61,14 +61,14 @@ export default function CursoCard({ curso }) {
           <>
             <Link
               to={`/cursos/editar/${curso._id}`}
-              className="flex items-center gap-2 bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600 transition"
+              className="flex items-center gap-2 bg-black text-white px-3 py-1 rounded"
             >
               <FaEdit /> Editar
             </Link>
 
             <button
               onClick={eliminarCurso}
-              className="flex items-center gap-2 bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition"
+              className="flex items-center gap-2 bg-black text-white px-3 py-1 rounded"
             >
               <FaTrash /> Eliminar
             </button>
@@ -78,7 +78,7 @@ export default function CursoCard({ curso }) {
         {user?.rol === "user" && (
           <button
             onClick={() => handleComprar(curso.id || curso._id)}
-            className="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 transition"
+            className="bg-black text-white px-3 py-1 rounded"
           >
             Comprar
           </button>

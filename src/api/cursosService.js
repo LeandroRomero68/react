@@ -1,24 +1,18 @@
 const BASE_URL = "http://localhost:3000/api/cursos";
 
-// ============================
-// Obtener token JWT
-// ============================
+
 function getToken() {
   return localStorage.getItem("token");
 }
 
-// ============================
-// Manejo global de respuestas
-// ============================
+
 async function handleResponse(res) {
   const text = await res.text();
 
-  // Si la API devolvió error
+
   if (!res.ok) {
     throw new Error(`Error API: ${text}`);
   }
-
-  // Intentar parsear a JSON (algunos endpoints devuelven vacío)
   try {
     return JSON.parse(text);
   } catch {
@@ -26,27 +20,18 @@ async function handleResponse(res) {
   }
 }
 
-// ============================
-//  GET: Todos los cursos
-// ============================
 export async function getCursos() {
   const res = await fetch(BASE_URL);
   const json = await handleResponse(res);
   return json?.data;
 }
 
-// ============================
-//  GET: Curso por ID
-// ============================
 export async function getCursoById(id) {
   const res = await fetch(`${BASE_URL}/${id}`);
   const json = await handleResponse(res);
   return json?.data;
 }
 
-// ============================
-//  POST: Crear curso (solo ADMIN)
-// ============================
 export async function createCurso(data) {
   const token = getToken();
 
@@ -63,9 +48,6 @@ export async function createCurso(data) {
   return json?.data;
 }
 
-// ============================
-//  PUT: Editar curso (solo ADMIN)
-// ============================
 export async function updateCurso(id, data) {
   const token = getToken();
 
@@ -82,9 +64,6 @@ export async function updateCurso(id, data) {
   return json?.data;
 }
 
-// ============================
-//  DELETE: Eliminar curso (solo ADMIN)
-// ============================
 export async function deleteCurso(id) {
   const token = getToken();
 

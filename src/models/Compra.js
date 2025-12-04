@@ -1,4 +1,3 @@
-// src/models/Compra.js
 export default class Compra {
   constructor({
     _id = null,

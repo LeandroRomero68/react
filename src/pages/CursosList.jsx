@@ -31,13 +31,12 @@ export default function CursosList() {
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold">Cursos Disponibles</h1>
 
-        <Link 
-  to="/cursos/nuevo"
-  className="bg-white text-black px-4 py-2 rounded-lg shadow border border-gray-300 
-             hover:bg-black hover:text-white transition duration-200"
->
-  + Nuevo Curso
-</Link>
+        <Link
+          to="/cursos/nuevo"
+          className="bg-black text-white px-4 py-2 rounded-lg shadow border border-gray-300"
+        >
+          + Nuevo Curso
+        </Link>
       </div>
 
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">

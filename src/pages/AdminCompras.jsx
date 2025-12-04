@@ -1,4 +1,3 @@
-// src/pages/AdminCompras.jsx
 import React, { useState } from "react";
 import ComprasList from "../components/ComprasList";
 import CompraForm from "../components/CompraForm";
@@ -21,14 +20,16 @@ export default function AdminCompras() {
   }
 
   function afterSaved() {
-    // Fuerza recarga del listado (ComprasList hace load a mount; aquí usamos key)
+
     setEditing(null);
     setRefreshKey(k => k + 1);
   }
 
   return (
     <div className="admin-compras">
-      <h1>Admin de Compras</h1>
+      <h1 className="text-3xl font-bold text-center p-6">
+        Admin de Compras
+      </h1>
       <div className="layout">
         <div className="left">
           {/* key força que ComprasList recargue cuando cambie */}

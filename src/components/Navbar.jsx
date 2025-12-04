@@ -1,4 +1,3 @@
-// src/components/Navbar.jsx
 import { Link } from "react-router-dom";
 import { useAuth } from "../auth/AuthProvider.jsx";
 
@@ -6,16 +5,16 @@ function Navbar() {
   const { user, logout } = useAuth();
 
   return (
-    <nav className="flex justify-between items-center p-4 bg-gray-100 shadow-md">
+    <nav className="flex justify-between items-center p-4 bg-black shadow-md">
       
       {/* Links principales */}
       <div className="flex gap-4">
-        <Link to="/">Inicio</Link>
-        <Link to="/cursos">Cursos</Link>
+        <Link to="/" className="text-white hover:underline">Inicio</Link>
+        <Link to="/cursos" className="text-white hover:underline">Cursos</Link>
 
-        {/* 📌 Solo Admin puede ver Compras */}
+        {/*Solo Admin puede ver Compras*/}
         {user?.rol === "admin" && (
-          <Link to="/compras">Compras</Link>
+          <Link to="/compras" className="text-white hover:underline">Compras</Link>
         )}
       </div>
 
@@ -48,13 +47,13 @@ function Navbar() {
             {user.rol === "user" && (
               <Link
                 to="/perfil"
-                className="font-medium text-gray-800 hover:underline"
+                className="font-medium text-white hover:underline"
               >
                 Mi Perfil
               </Link>
             )}
 
-            <span className="mr-2 font-semibold text-gray-700">
+            <span className="mr-2 font-semibold text-white">
               Hola, {user.nombre}
             </span>
 

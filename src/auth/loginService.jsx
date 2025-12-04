@@ -1,4 +1,3 @@
-// src/auth/loginService.js
 const API_URL = "http://localhost:3000/api/usuarios/login";
 
 export async function loginService({ email, password }) {
@@ -9,7 +8,6 @@ export async function loginService({ email, password }) {
       body: JSON.stringify({ email, password }),
     });
 
-    // si la respuesta no es ok, devolvemos el texto/JSON para mostrar error
     const text = await res.text();
     try {
       const json = JSON.parse(text);
