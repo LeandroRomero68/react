@@ -46,20 +46,20 @@ DWAN4AV
 ## Instalación
 
 1. Instalar y configurar la **API** localmente:  
-   [Repositorio API](https://github.com/LeandroRomero68/apps-hibridas-parcial-1.git)
+  (https://github.com/LeandroRomero68/apps-hibridas-parcial-1.git)
 
 2. Clonar este proyecto:  
 ```bash
 git clone https://github.com/LeandroRomero68/react.git
 Instalar las dependencias:
 
-bash
+
 Copiar código
 npm install
 Configurar las variables de entorno tomando como referencia .env.example.
 
 Iniciar el servidor de desarrollo:
 
-bash
+
 Copiar código
 npm run dev
