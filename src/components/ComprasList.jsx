@@ -65,10 +65,10 @@ export default function ComprasList({ onEdit, onView }) {
       <tr key={c.id || c._id} className="border-b">
         <td className="border px-4 py-2">{c.id || c._id}</td>
         <td className="border px-4 py-2">
-          {typeof c.usuario === "object" ? c.usuario.nombre || c.usuario._id : c.usuario}
+          {c.usuario?.nombre || c.usuario?._id || "Usuario eliminado"}
         </td>
         <td className="border px-4 py-2">
-          {typeof c.curso === "object" ? c.curso.nombre || c.curso._id : c.curso}
+          {c.curso?.nombre || c.curso?._id || "Curso eliminado"}
         </td>
         <td className="border px-4 py-2">{c.metodoPago}</td>
         <td className="border px-4 py-2">{c.estado}</td>
