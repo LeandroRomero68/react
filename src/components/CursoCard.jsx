@@ -1,4 +1,3 @@
-import { CursosController } from "../controllers/cursosController.js";
 import { FaTrash, FaEdit } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { useAuth } from "../auth/AuthProvider.jsx";
@@ -8,58 +7,57 @@ export default function CursoCard({ curso }) {
 
   const eliminarCurso = async () => {
     if (!confirm("¿Seguro que deseas eliminar este curso?")) return;
-    await CursosController.eliminar(curso._id);
+    await fetch(`${import.meta.env.VITE_API_URL}/cursos/${curso._id}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${user.token}`,
+      },
+    });
     window.location.reload();
   };
 
   const handleComprar = async (idCurso) => {
-  if (!user || !user.id) {
-    alert("Debes iniciar sesión para comprar un curso");
-    return;
-  }
-
-  console.log("🔍 user.id:", user.id);
-  console.log("⚡ idCurso recibido:", idCurso);
-
-  try {
-  const res = await fetch(
-    `${import.meta.env.VITE_API_URL}/compras`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${user.token}`,
-      },
-      body: JSON.stringify({
-        usuario: user.id,
-        curso: idCurso,
-        metodoPago: "efectivo",
-        estado: "debe",
-      }),
+    if (!user || !user.id) {
+      alert("Debes iniciar sesión para comprar un curso");
+      return;
     }
-  );
 
-  const data = await res.json();
+    try {
+      const res = await fetch(
+        `${import.meta.env.VITE_API_URL}/compras`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${user.token}`,
+          },
+          body: JSON.stringify({
+            usuario: user.id,
+            curso: idCurso,
+            metodoPago: "efectivo",
+            estado: "debe",
+          }),
+        }
+      );
 
-  if (!res.ok) {
-    console.error(data);
-    alert(data.msg || "No se pudo registrar la compra");
-    return;
-  }
+      const data = await res.json();
 
-  alert(`Has comprado el curso: ${curso.nombre}`);
-  window.location.reload();
+      if (!res.ok) {
+        console.error(data);
+        alert("No se pudo registrar la compra");
+        return;
+      }
 
-} catch (error) {
-  console.error("Error al comprar:", error);
-  alert("Hubo un problema al registrar la compra");
-}
-
-
+      alert(`Has comprado el curso: ${curso.nombre}`);
+      window.location.reload();
+    } catch (error) {
+      console.error("Error al comprar:", error);
+      alert("Hubo un problema al registrar la compra");
+    }
+  };
 
   return (
     <div className="relative bg-white border p-5 rounded-xl shadow-lg hover:shadow-xl transition">
-      
       <h2 className="text-xl font-bold text-gray-800">{curso.nombre}</h2>
       <p className="text-gray-600 mt-2">{curso.descripcion}</p>
       <p className="text-gray-900 font-bold mt-3">${curso.precio}</p>
@@ -85,7 +83,7 @@ export default function CursoCard({ curso }) {
 
         {user?.rol === "user" && (
           <button
-            onClick={() => handleComprar(curso.id || curso._id)}
+            onClick={() => handleComprar(curso._id)}
             className="bg-black text-white px-3 py-1 rounded"
           >
             Comprar
