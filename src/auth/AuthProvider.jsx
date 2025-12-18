@@ -43,11 +43,14 @@ export function AuthProvider({ children }) {
 
   async function loginRequest(email, password) {
     try {
-      const res = await fetch("http://localhost:3000/api/usuarios/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
+      const res = await fetch(
+  `${import.meta.env.VITE_API_URL}/usuarios/login`,
+  {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, password }),
+  }
+);
 
       const data = await res.json();
 

@@ -22,31 +22,39 @@ export default function CursoCard({ curso }) {
   console.log("⚡ idCurso recibido:", idCurso);
 
   try {
-    const res = await fetch("http://localhost:3000/api/compras", {
+  const res = await fetch(
+    `${import.meta.env.VITE_API_URL}/compras`,
+    {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${user.token}`,
+      },
       body: JSON.stringify({
-        usuario: `${user.id}`,
-        curso: `${idCurso}`,
+        usuario: user.id,
+        curso: idCurso,
         metodoPago: "efectivo",
-        estado: "debe"
+        estado: "debe",
       }),
-    });
-
-    const data = await res.json();
-
-    if (data.ok) {
-      alert(`Has comprado el curso: ${curso.nombre}`);
-      window.location.reload();
-    } else {
-      alert("No se pudo registrar la compra");
-      console.error(data);
     }
-  } catch (error) {
-    console.error("Error al comprar:", error);
-    alert("Hubo un problema al registrar la compra");
+  );
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    console.error(data);
+    alert(data.msg || "No se pudo registrar la compra");
+    return;
   }
-};
+
+  alert(`Has comprado el curso: ${curso.nombre}`);
+  window.location.reload();
+
+} catch (error) {
+  console.error("Error al comprar:", error);
+  alert("Hubo un problema al registrar la compra");
+}
+
 
 
   return (
